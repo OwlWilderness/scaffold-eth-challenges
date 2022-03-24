@@ -65,3 +65,4 @@ yarn-error.log*
 *.tsbuildinfo
 *.stackdump
 packages/hardhat/package.json
+packages/hardhat/package.json
