@@ -28,6 +28,8 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
 // import Hints from "./Hints";
+import { p04pasjson } from "./data/p04pas";
+import Column from "antd/lib/table/Column";
 
 const { BufferList } = require("bl");
 const ipfsAPI = require("ipfs-http-client");
@@ -517,7 +519,7 @@ function App(props) {
   const [count, setCount] = useState(1);
 
   // the json for the nfts
-  const json = {
+  /*const json = {
     1: {
       description: "It's actually a bison?",
       external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
@@ -537,7 +539,7 @@ function App(props) {
           value: 42,
         },
       ],
-    },
+    } ,
     2: {
       description: "What is it so worried about?",
       external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
@@ -638,11 +640,12 @@ function App(props) {
         },
       ],
     },
-  };
+  }; */
 
   const mintItem = async () => {
     // upload to ipfs
-    const uploaded = await ipfs.add(JSON.stringify(json[count]));
+    //const uploaded = await ipfs.add(JSON.stringify(p04pasjson[count]));
+    const uploaded = await ipfs.add(JSON.stringify(p04pasjson[count]));
     setCount(count + 1);
     console.log("Uploaded Hash: ", uploaded);
     const result = tx(
@@ -742,12 +745,14 @@ function App(props) {
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
                 bordered
+                grid={{column:8}}
+                itemLayout = "horizontal"
                 dataSource={yourCollectibles}
                 renderItem={item => {
-                  const id = item.id.toNumber();
+                  const id = item.name
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
+                      <Card width="600"
                         title={
                           <div>
                             <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
@@ -757,10 +762,10 @@ function App(props) {
                         <div>
                           <img src={item.image} style={{ maxWidth: 150 }} />
                         </div>
-                        <div>{item.description}</div>
+                        <div>{item.name}</div>
                       </Card>
 
-                      <div>
+{/*                      <div>
                         owner:{" "}
                         <Address
                           address={item.owner}
@@ -786,7 +791,7 @@ function App(props) {
                         >
                           Transfer
                         </Button>
-                      </div>
+                      </div> */}
                     </List.Item>
                   );
                 }}

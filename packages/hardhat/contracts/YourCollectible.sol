@@ -15,19 +15,78 @@ contract YourCollectible is
 {
     using Counters for Counters.Counter;
 
-    Counters.Counter private _tokenIdCounter;
+    mapping(uint256 => Art) public artCollection;
 
-    constructor() ERC721("YourCollectible", "YCB") {}
+    Counters.Counter private _tokenIdCounter;
+    
+    struct Art{
+        uint id;
+        string uri;
+        address collector;
+    }
+
+    constructor() ERC721("Poap4PeaceArtSubmission", "P04PAS") {
+         _currateArt();
+        
+    }
 
     function _baseURI() internal pure override returns (string memory) {
         return "https://ipfs.io/ipfs/";
     }
 
+    //add the artist ids to the art collection and initialize uri = not minted (valid uri if minted) and collector.
+    function _currateArt() internal {
+        //ideallly this would be created when a requestor uploads the artist submissions
+        //this is also kind of hackish ?
+        artCollection[0] = Art(4020101,"not minted", address(this));
+        artCollection[1] = Art(4035601,"not minted", address(this));
+        artCollection[2] = Art(4130701,"not minted", address(this));
+        artCollection[3] = Art(4132501,"not minted", address(this));
+        artCollection[4] = Art(4173401,"not minted", address(this));
+        artCollection[5] = Art(4173402,"not minted", address(this));
+        artCollection[6] = Art(4191101,"not minted", address(this));
+        artCollection[7] = Art(4195401,"not minted", address(this));
+        artCollection[8] = Art(4232701,"not minted", address(this));                                                        
+        artCollection[9] = Art(4232702,"not minted", address(this));
+        artCollection[10] = Art(4271001,"not minted", address(this));
+        artCollection[11] = Art(4318501,"not minted", address(this));
+        artCollection[12] = Art(4451301,"not minted", address(this));
+        artCollection[13] = Art(4503501,"not minted", address(this));
+        artCollection[14] = Art(4536501,"not minted", address(this));
+        artCollection[15] = Art(4605801,"not minted", address(this));
+        artCollection[16] = Art(4605802,"not minted", address(this));
+        artCollection[17] = Art(4605803,"not minted", address(this));
+        artCollection[18] = Art(4684601,"not minted", address(this));
+        artCollection[19] = Art(4740801,"not minted", address(this));
+        artCollection[20] = Art(4752401,"not minted", address(this));
+        artCollection[21] = Art(4771901,"not minted", address(this));
+        artCollection[22] = Art(4800201,"not minted", address(this));
+        artCollection[23] = Art(4890901,"not minted", address(this));
+        artCollection[24] = Art(4890902,"not minted", address(this));
+        artCollection[25] = Art(4949901,"not minted", address(this));
+        artCollection[26] = Art(4956701,"not minted", address(this));
+    }                                                                      
+                                      
+
+
+
     function mintItem(address to, string memory uri) public returns (uint256) {
-        _tokenIdCounter.increment();
-        uint256 tokenId = _tokenIdCounter.current();
+        uint current = _tokenIdCounter.current();
+        Art memory token = artCollection[current];
+       
+        //update artist submission token with uri and collector (who minted)
+        //maybe in the future this would actually be the artist address as they submit
+        //their own work???
+        token.uri = uri;
+        token.collector = to;
+        artCollection[current] = token; 
+
+        uint256 tokenId = token.id; 
         _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri);
+        _setTokenURI(tokenId, token.uri);
+
+
+        _tokenIdCounter.increment();
         return tokenId;
     }
 
