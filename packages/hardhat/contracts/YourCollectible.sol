@@ -18,7 +18,8 @@ contract YourCollectible is
     mapping(uint256 => Art) public artCollection;
 
     Counters.Counter private _tokenIdCounter;
-    
+    uint256 public LastMintedIndex = 0;
+
     struct Art{
         uint id;
         string uri;
@@ -71,9 +72,19 @@ contract YourCollectible is
 
 
     function mintItem(address to, string memory uri) public returns (uint256) {
+        //get current token counter (similar counter in ui)
         uint current = _tokenIdCounter.current();
+        
+        //sync counter when of browser reset
+        if (LastMintedIndex > current) {
+            while (LastMintedIndex > current) {
+                _tokenIdCounter.increment();
+                current = _tokenIdCounter.current();
+            }
+        }
+
         Art memory token = artCollection[current];
-       
+
         //update artist submission token with uri and collector (who minted)
         //maybe in the future this would actually be the artist address as they submit
         //their own work???
@@ -81,12 +92,14 @@ contract YourCollectible is
         token.collector = to;
         artCollection[current] = token; 
 
+        //mint and set uri of minted token
         uint256 tokenId = token.id; 
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, token.uri);
 
-
+        //increment token id counter
         _tokenIdCounter.increment();
+        LastMintedIndex =_tokenIdCounter.current();
         return tokenId;
     }
 

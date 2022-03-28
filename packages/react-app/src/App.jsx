@@ -645,6 +645,13 @@ function App(props) {
   const mintItem = async () => {
     // upload to ipfs
     //const uploaded = await ipfs.add(JSON.stringify(p04pasjson[count]));
+    //if(writeContracts.YourCollectible.LastMintedIndex > count){
+    //  setCount(writeContracts.YourCollectible.LastMintedIndex);
+    //}
+    
+    
+    //const itemToMint = await readContracts.YourCollectible.LastMintedIndex;
+    //how do I get the above to work with the count here:
     const uploaded = await ipfs.add(JSON.stringify(p04pasjson[count]));
     setCount(count + 1);
     console.log("Uploaded Hash: ", uploaded);
