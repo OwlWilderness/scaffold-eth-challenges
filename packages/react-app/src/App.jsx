@@ -276,6 +276,7 @@ function App(props) {
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
+
   // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
@@ -285,6 +286,7 @@ function App(props) {
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
+
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -297,6 +299,9 @@ function App(props) {
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
 
+          const hearts = await readContracts.YourCollectible.getHearts(tokenId);
+          console.log("HEARTs:", hearts);
+
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
 
@@ -305,7 +310,7 @@ function App(props) {
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, hearts: hearts, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -517,6 +522,7 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
+ 
 
   // the json for the nfts
   /*const json = {
@@ -648,9 +654,8 @@ function App(props) {
     //if(writeContracts.YourCollectible.LastMintedIndex > count){
     //  setCount(writeContracts.YourCollectible.LastMintedIndex);
     //}
-    
-    
-    //const itemToMint = await readContracts.YourCollectible.LastMintedIndex;
+    //const itemToMint = await readContracts.YourCollectible.getLastMintedIndex();
+    //console.log(itemToMint);
     //how do I get the above to work with the count here:
     const uploaded = await ipfs.add(JSON.stringify(p04pasjson[count]));
     setCount(count + 1);
@@ -749,31 +754,40 @@ function App(props) {
                 MINT NFT
               </Button>
             </div>
-            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+            <div style={{ width: "auto", margin: "auto", marginTop: "auto", paddingBottom: "auto" }}>
               <List
                 bordered
-                grid={{column:8}}
+                grid
                 itemLayout = "horizontal"
                 dataSource={yourCollectibles}
                 renderItem={item => {
                   const id = item.name
+                  const hearts = item.hearts
+                  console.log("hearts:" + hearts)
+
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card width="600"
+                      <Card 
                         title={
                           <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                            <span style={{ fontSize: 16, marginRight: 8 }}>{item.description}</span> 
                           </div>
                         }
                       >
                         <div>
-                          <img src={item.image} style={{ maxWidth: 150 }} />
+                          <img src={item.image} alt={id} style={{ maxWidth: 150 }} />
                         </div>
-                        <div>{item.name}</div>
+                        <div>{id}:{hearts.toString()}</div>
                       </Card>
-
-{/*                      <div>
-                        owner:{" "}
+                      <div>                        
+                        <Button
+                          onClick={() => { }}
+                        >
+                          Heart Art
+                        </Button>
+                        </div>
+                      <div>
+                        {/*owner:{" "}
                         <Address
                           address={item.owner}
                           ensProvider={mainnetProvider}
@@ -789,16 +803,8 @@ function App(props) {
                             update[id] = newValue;
                             setTransferToAddresses({ ...transferToAddresses, ...update });
                           }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
-                          }}
-                        >
-                          Transfer
-                        </Button>
-                      </div> */}
+                        />*/}
+                      </div> 
                     </List.Item>
                   );
                 }}

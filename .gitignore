@@ -64,3 +64,4 @@ yarn.lock
 .netlify
 *.tsbuildinfo
 *.stackdump
+packages/react-app/src/constants.js
