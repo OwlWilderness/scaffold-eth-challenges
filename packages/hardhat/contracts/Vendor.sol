@@ -1,7 +1,10 @@
 pragma solidity 0.8.4;
 // SPDX-License-Identifier: MIT
 
+
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+
 import "./YourToken.sol";
 import "./YourCollectible.sol";
 
@@ -14,6 +17,7 @@ import "./YourCollectible.sol";
 //Clone from Fork: git clone https://github.com/OwlWilderness/scaffold-eth-challenges challenge-2-token-vendor
 
 contract Vendor is Ownable {
+  using SafeMath for uint;
 
   uint256 public constant tokensPerEth = 10000;
   mapping ( address => uint256 ) public issued;
@@ -29,7 +33,19 @@ contract Vendor is Ownable {
     yourCollectible = YourCollectible(_address);
   }
 
- 
+  function issueTokens(address _address) public returns (uint) {
+    //verify tokens can be issued and only issue up to max per address
+    uint maxCanIssue = yourCollectible.IssueOnRegisterTokenCount();
+    uint issued = issued[_address];
+    uint toIssue = (issued <= maxCanIssue) ? (maxCanIssue - issued) : 0 ;    
+    require(toIssue > 0, "total issued exceed max tokens for this address");
+
+    //issue tokens to address
+    yourToken.transfer(_address, toIssue);
+
+    //return number of issued tokens
+    return toIssue;
+  }
 
   // ToDo: create a payable buyTokens() function:
   function buyTokens() public payable {

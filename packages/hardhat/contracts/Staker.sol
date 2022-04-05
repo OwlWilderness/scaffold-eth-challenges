@@ -25,6 +25,12 @@ contract Staker {
       exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
   }
 
+  //allow deadline to be reset
+  function resetDeadline(uint256 _deadLine) public {
+      require(_deadLine >= block.time)
+      deadline = _deadLine;
+  }
+
   // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
   //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
   function stake() public payable {
@@ -46,15 +52,9 @@ contract Staker {
 
   }
 
-   // Add a `withdraw(address payable)` function lets users withdraw their balance
+  
+  // Add a `withdraw(address payable)` function lets users withdraw their balance
   function withdraw(address payable _address) external notCompleted {
-    //i struggled with this function and am not sure I understand it.
-    //i added a require(_address == _msg.sender) to see if that would assert when testing
-    //yes - need to learn how to debug
-    //so.. the msg.sender is the staker contract and the address is the user?
-    //I saw a comment in the chat yesterday about going to challenge 2 and comming back
-    //  to this challenge - i did that and that helped but still need a few things to click.
-
     require (openForWithdraw, "Not yet open for withdraw.");
     (bool success, ) = _address.call{value: balances[msg.sender]}("");
     balances[msg.sender] = 0;

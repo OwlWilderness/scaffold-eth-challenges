@@ -14,23 +14,31 @@ contract YourCollectible is
     ERC721URIStorage,
     Ownable
 {
+    //usings
     using Counters for Counters.Counter;
 
+
+    //mappings
     mapping(uint => Art) public ArtCollection;
     mapping (uint256 => uint) public ArtConnection;
 
+    //parameters
     Counters.Counter private _tokenIdCounter;
     uint256 public LastMintedIndex = 0;
     uint256 public CollectionCount = 0;
 
+    bool public IssueOnRegister = true;
+    uint public IssueOnRegisterTokenCount = 2;
+    uint public MaxHeartPerAddressCount = 2;
+
     struct Art{
         uint256 id;
         string uri;
-        address collector;
+        address owner;
         uint256 hearts;
     }
 
-
+    //
     constructor() ERC721("Poap4PeaceArtSubmission", "P04PAS") {
        _currateArt();
     }
