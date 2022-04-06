@@ -699,7 +699,7 @@ function App(props) {
               YourCollectibles
             </Link>
           </Menu.Item>
-          <Menu.Item key="/transfers">
+          {/*<Menu.Item key="/transfers">
             <Link
               onClick={() => {
                 setRoute("/transfers");
@@ -708,8 +708,8 @@ function App(props) {
             >
               Transfers
             </Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsup">
+            </Menu.Item>*/}
+            {/*<Menu.Item key="/ipfsup">
             <Link
               onClick={() => {
                 setRoute("/ipfsup");
@@ -718,8 +718,8 @@ function App(props) {
             >
               IPFS Upload
             </Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsdown">
+          </Menu.Item>*/}
+           {/* <Menu.Item key="/ipfsdown">
             <Link
               onClick={() => {
                 setRoute("/ipfsdown");
@@ -728,7 +728,7 @@ function App(props) {
             >
               IPFS Download
             </Link>
-          </Menu.Item>
+          </Menu.Item>*/}
           <Menu.Item key="/debugcontracts">
             <Link
               onClick={() => {
@@ -736,7 +736,37 @@ function App(props) {
               }}
               to="/debugcontracts"
             >
-              Debug Contracts
+              Debug Collectible Contract
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/debugcontracts_mod">
+            <Link
+              onClick={() => {
+                setRoute("/debugcontracts_mod");
+              }}
+              to="/debugcontracts_mod"
+            >
+              Debug Moderator Contract
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/debugcontracts_token">
+            <Link
+              onClick={() => {
+                setRoute("/debugcontracts_token");
+              }}
+              to="/debugcontracts_token"
+            >
+              Debug Token Contract
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/debugcontracts_vendor">
+            <Link
+              onClick={() => {
+                setRoute("/debugcontracts_vendor");
+              }}
+              to="/debugcontracts_vendor"
+            >
+              Debug Vendor Contract
             </Link>
           </Menu.Item>
         </Menu>
@@ -811,7 +841,7 @@ function App(props) {
               />
             </div>
           </Route>
-
+  {/*
           <Route path="/transfers">
             <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
@@ -904,6 +934,7 @@ function App(props) {
 
             <pre style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 150 }}>{ipfsContent}</pre>
           </Route>
+            */}
           <Route path="/debugcontracts">
             <Contract
               name="YourCollectible"
@@ -914,6 +945,36 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
+          <Route path="/debugcontracts_mod">
+            <Contract
+              name="Moderator"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route path="/debugcontracts_token">
+            <Contract
+              name="YourToken"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route path="/debugcontracts_vendor">
+            <Contract
+              name="Vendor"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>          
         </Switch>
       </BrowserRouter>
 

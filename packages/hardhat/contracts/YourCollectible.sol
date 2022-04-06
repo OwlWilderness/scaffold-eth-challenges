@@ -37,6 +37,11 @@ contract YourCollectible is
     uint public IssueOnRegisterTokenCount = 2;
     uint public MaxHeartPerAddressCount = 2;
 
+    function getHearts(uint256 _p04pasId) public view returns (uint256) {
+        uint ac = ArtConnection[_p04pasId];
+        return ArtCollection[ac].hearts;
+    }
+
     function HeartArt(address _mod, uint256 _p04pasId, uint256 _voteCount) external {
         //is this safe? an this be called by anyone? not sure if onlyownder is what i want - the requires are in the calling function
         //can I pass in the Moderator address and verify back that way?
