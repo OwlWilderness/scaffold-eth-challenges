@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-
+import "./Moderator.sol";
 
 contract YourCollectible is
     ERC721,
@@ -17,6 +17,12 @@ contract YourCollectible is
     //usings
     using Counters for Counters.Counter;
 
+    struct Art{
+        uint256 id;
+        string uri;
+        address collector;
+        uint256 hearts;
+    }
 
     //mappings
     mapping(uint => Art) public ArtCollection;
@@ -31,14 +37,18 @@ contract YourCollectible is
     uint public IssueOnRegisterTokenCount = 2;
     uint public MaxHeartPerAddressCount = 2;
 
-    struct Art{
-        uint256 id;
-        string uri;
-        address collector;
-        uint256 hearts;
-    }
+    function HeartArt(address _mod, uint256 _p04pasId, uint256 _voteCount) external {
+        //is this safe? an this be called by anyone? not sure if onlyownder is what i want - the requires are in the calling function
+        //can I pass in the Moderator address and verify back that way?
+        Moderator mod = Moderator(_mod);
+        mod.ValidateOkToVote(msg.sender, address(this), _voteCount);
 
+        uint artConnection = ArtConnection[_p04pasId];
+        uint hearts = ArtCollection[artConnection].hearts;
+        ArtCollection[artConnection].hearts = hearts + _voteCount;
+    }
     //
+
     constructor() ERC721("Poap4PeaceArtSubmission", "P04PAS") {
        _currateArt();
     }
@@ -85,6 +95,7 @@ contract YourCollectible is
         return tokenId;
     }
 
+     
     //add the artist ids to the art collection and initialize uri = not minted (valid uri if minted) and collector.
     function _currateArt() internal {
         //ideallly this would be created when a requestor uploads the artist submissions

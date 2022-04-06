@@ -19,7 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
      from: deployer,
      args: [exampleExternalContract.address, staker.address, vendor.address, yourCollection.address, yourToken.address], // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
      log: true,
-     value: ethers.utils.parseEther("0.023"),
+     value: ethers.utils.parseEther("0.00023"),
    });
 };
 
