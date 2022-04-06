@@ -34,7 +34,7 @@ contract YourCollectible is
     struct Art{
         uint256 id;
         string uri;
-        address owner;
+        address collector;
         uint256 hearts;
     }
 

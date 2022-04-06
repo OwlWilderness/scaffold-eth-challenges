@@ -51,7 +51,7 @@ contract Vendor is Ownable {
   function buyTokens() public payable {
     uint256 amountOfTokens = msg.value * tokensPerEth;
     uint256 issued = issued[msg.sender];
-    require(issued <= yourCollectible.maxHeartsPerAddresss(), "total issued exceed max");
+    require(issued <= yourCollectible.MaxHeartPerAddressCount(), "total issued exceed max");
 
     (bool success, ) = address(this).call{value: msg.value}("");
     yourToken.transfer(msg.sender, amountOfTokens);

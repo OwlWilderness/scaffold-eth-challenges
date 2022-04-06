@@ -13,7 +13,7 @@ import "./ExampleExternalContract.sol";
 contract Staker {
   event Stake(address indexed _address, uint256 _value);
 
-  mapping ( address => uint256 ) public balances;
+  mapping(address => uint256) public balances;
 
   uint256 public constant threshold = 1 ether;
   uint256 public deadline = block.timestamp + 72 hours;
@@ -27,7 +27,7 @@ contract Staker {
 
   //allow deadline to be reset
   function resetDeadline(uint256 _deadLine) public {
-      require(_deadLine >= block.time)
+      require(_deadLine >= block.timestamp);
       deadline = _deadLine;
   }
 
