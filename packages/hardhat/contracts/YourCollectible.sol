@@ -34,8 +34,8 @@ contract YourCollectible is
     uint256 public CollectionCount = 0;
 
     bool public IssueOnRegister = true;
-    uint public IssueOnRegisterTokenCount = 2;
-    uint public MaxHeartPerAddressCount = 2;
+    uint public IssueOnRegisterTokenCount = 2 * 10 ** 18;
+    uint public MaxHeartPerAddressCount = 2 * 10 ** 18;
 
     function getHearts(uint256 _p04pasId) public view returns (uint256) {
         uint ac = ArtConnection[_p04pasId];
@@ -62,6 +62,9 @@ contract YourCollectible is
         return "https://ipfs.io/ipfs/";
     }
 
+    function getIssueOnRegisterTokenCount() public view returns (uint) {
+        return IssueOnRegisterTokenCount;
+    }     
     function getLastMintedIndex() public view returns (uint256) {
         return LastMintedIndex;
     }                              

@@ -9,15 +9,15 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // You might need the previously deployed contracts:
   const yourCollection = await ethers.getContract("YourCollectible", deployer);
-  const exampleExternalContract = await ethers.getContract("ExampleExternalContract", deployer);
-  const staker = await ethers.getContract("Staker", deployer);
+ // const exampleExternalContract = await ethers.getContract("ExampleExternalContract", deployer);
+ // const staker = await ethers.getContract("Staker", deployer);
   const yourToken = await ethers.getContract("YourToken", deployer);
   const vendor = await ethers.getContract("Vendor", deployer);
 
   // Todo: deploy the contract
    await deploy("Moderator", {
      from: deployer,
-     args: [exampleExternalContract.address, staker.address, vendor.address, yourCollection.address, yourToken.address], // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+     args: [vendor.address, yourCollection.address, yourToken.address], // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
      log: true,
      value: ethers.utils.parseEther("0.00023"),
    });

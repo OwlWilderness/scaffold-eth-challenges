@@ -9,11 +9,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   // You might need the previously deployed yourToken:
   const yourToken = await ethers.getContract("YourToken", deployer);
-
+  const yourCollectible = await ethers.getContract("YourCollectible", deployer);
   // Todo: deploy the vendor
    await deploy("Vendor", {
      from: deployer,
-     args: [yourToken.address], // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+     args: [yourToken.address, yourCollectible.address], // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
      log: true,
    });
   //
