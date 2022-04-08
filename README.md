@@ -11,6 +11,8 @@ The initial challenges are at [SpeedRunEthereum.com](https://speedrunethereum.co
 
 💬 If you have not you can join the telegram [Challenge 0 telegram](https://t.me/+Y2vqXZZ_pEFhMGMx)!!!
 
+##
+Test on Rinkeby: poap4peace-heart-v0.surge.sh
 
 ## Source
 
