@@ -57,7 +57,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -271,9 +271,10 @@ function App(props) {
   const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
-
+  
+  const deployer = "0x0a5d50420626f4ac60939a04bc4f3e3781dcf1a8";
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [deployer]);
   console.log("🤗 balance:", balance);
 
   // keep track of a variable from the contract in the local React state:
@@ -302,7 +303,8 @@ function App(props) {
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("Getting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+
+          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(deployer, tokenIndex);
           console.log("tokenId", tokenId);
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
@@ -318,7 +320,7 @@ function App(props) {
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, hearts: hearts, ...jsonManifest });
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: deployer, hearts: hearts, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }

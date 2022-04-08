@@ -12,14 +12,19 @@ The initial challenges are at [SpeedRunEthereum.com](https://speedrunethereum.co
 💬 If you have not you can join the telegram [Challenge 0 telegram](https://t.me/+Y2vqXZZ_pEFhMGMx)!!!
 
 ##
-Test on Rinkeby: poap4peace-heart-v0.surge.sh
-
+Test on Rinkeby: https://poap4peace-heart-v01.surge.sh/
+Contract: 
 ## Source
 
 Original Source: https://github.com/scaffold-eth/scaffold-eth-challenges
 
 Forked Source: https://github.com/OwlWilderness/scaffold-eth-challenges/tree/forest
 
+### Contracts (From Challenge)
+* > YourCollectible - (Challenge 0) : POAP for PEACE Artist Submissions (P04PAS) https://rinkeby.etherscan.io/address/0x216eec15617fB82E83f7eEf08Ea11Bd6F226AACF#code
+* > YourToken - (Challege 2) : HEART token used to vote https://rinkeby.etherscan.io/address/0x846D7e0a8b54Cc818bE71d3D3a4fC5e71362d7f5#code
+* > Vendor - (Challenge 2) : Hold and Issue HEART tokens (currently no cost) https://rinkeby.etherscan.io/address/0xA69693cbDF9038C1c5b1c453E83Fd59f3258CeA3#code
+* > Moderator (this) : manange Registration and Voting https://rinkeby.etherscan.io/address/0x6286DB08B4e5C8A381AaA4a9C0A8e274Fa7C1376#code
 
 ## Overview
 > P04PAS - POAP 4 PEACE Artist Submbission (yourCollectible)
@@ -36,6 +41,7 @@ Intention: Allow users to vote on Artist Submissions to a Collection with HEART 
 * add time limits to vote
 * > add WL upload and register. WL is currently hardcoded to deployer and contracts - WL could/should? be hodlrs of a token.
 * allows one Register(address) at a time - would be nice to extend the registration 
+* transfer ownership of collectible to moderator and display collectibles from moderator : KI05
 
 ### Known Issues (KNnn)
 * KI01: when testing it waits for an event in the browser after minting to continue the test (on localhost anyway)
@@ -44,18 +50,17 @@ Intention: Allow users to vote on Artist Submissions to a Collection with HEART 
 * KI04: heart counts do not update after Heart Art action 
 * * KI04a Voter Address HEART count
 * * KI04b Heart Count below Artist Submission next to P04PAS ID 
+* KI05: yourCollectible owner is the minter - should be transfered to moderator
 
-### Contracts (From Challenge)
-* > YourCollectible - (Challenge 0) : POAP for PEACE Artist Submissions (P04PAS)
-* > YourToken - (Challege 2) : HEART token used to vote
-* > Vendor - (Challenge 2) : Hold and Issue HEART tokens (currently no cost)
-* > Moderator (this) : manange Registration and Voting
+
 
 
 
 ### 🖨 Minting 
 
 > ✏️ Mint the POAP For PEACE Artist Submission NFTs if not already minted. Click the `MINT NFT` button in the YourCollectables tab.  The current collection is 27 items and it should throw an error if addition items are minted.  
+
+Note: P04PAS Collectibles have already been minted.
 
 ### Register
 > Click Register to add address to Votes mapping. This will also issue 2 HEART tokens to registering address - this is displayed next to the Register button
