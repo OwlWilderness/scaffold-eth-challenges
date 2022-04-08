@@ -23,7 +23,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Address, AddressInput, Balance, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
@@ -276,6 +276,9 @@ function App(props) {
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
+  // keep track of a variable from the contract in the local React state:
+  //const hearts = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
+  //console.log("🤗 heart:", hearts);
 
   // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
@@ -286,7 +289,6 @@ function App(props) {
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
-
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -522,7 +524,7 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
- 
+  const [hearts, setHearts] = useState(0);
 
   // the json for the nfts
   /*const json = {
@@ -647,6 +649,65 @@ function App(props) {
       ],
     },
   }; */
+
+  const heartArt = async (p04pasId) => {
+    const result = tx(
+      writeContracts &&
+        writeContracts.Moderator &&
+        writeContracts.Moderator.Vote(address, p04pasId, 1),
+        update => {
+          console.log("📡 Transaction Update:", update);
+          if (update && (update.status === "confirmed" || update.status === 1)) {
+            console.log(" 🍾 Transaction " + update.hash + " finished!");
+            console.log(
+              " ⛽️ " +
+                update.gasUsed +
+                "/" +
+                (update.gasLimit || update.gas) +
+                " @ " +
+                parseFloat(update.gasPrice) / 1000000000 +
+                " gwei",
+            );
+          }
+        },
+      );
+  }
+
+
+  const getVotes = async () => {
+    //playing hackysack again
+    const votes = await readContracts.Moderator.getVotes(address)
+    console.log("votes", votes)
+    const current = votes[1]
+    console.log("current", current)
+    setHearts(current.toNumber())
+    //console.log("updated count: ", ethers.utils.parseEther(vs));
+  }
+
+  const register = async () => {
+    //register address and issue 2 heart tokens
+    const result = tx(
+      writeContracts &&
+        writeContracts.Moderator &&
+        writeContracts.Moderator.Register(address),
+      update => {
+        console.log("📡 Transaction Update:", update);
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          console.log(" 🍾 Transaction " + update.hash + " finished!");
+          console.log(
+            " ⛽️ " +
+              update.gasUsed +
+              "/" +
+              (update.gasLimit || update.gas) +
+              " @ " +
+              parseFloat(update.gasPrice) / 1000000000 +
+              " gwei",
+          );
+        }
+      },
+    );
+    
+  };
 
   const mintItem = async () => {
     // upload to ipfs
@@ -773,6 +834,7 @@ function App(props) {
         <Switch>
           <Route exact path="/">
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+
               <Button
                 disabled={minting}
                 shape="round"
@@ -783,6 +845,21 @@ function App(props) {
               >
                 MINT NFT
               </Button>
+
+              <Button
+                disabled={minting}
+                shape="round"
+                size="large"
+                onClick={() => {
+                  register();
+                  getVotes();
+                }}
+              >
+               Register
+              </Button>
+
+              <label> My HEART count: {hearts} </label>
+           
             </div>
             <div style={{ width: "auto", margin: "auto", marginTop: "auto", paddingBottom: "auto" }}>
               <List
@@ -811,7 +888,10 @@ function App(props) {
                       </Card>
                       <div>                        
                         <Button
-                          onClick={() => { }}
+                          onClick={() => {
+                            heartArt(id)
+                            getVotes()
+                           }}
                         >
                           Heart Art
                         </Button>

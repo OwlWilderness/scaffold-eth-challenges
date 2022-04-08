@@ -93,15 +93,17 @@ contract Moderator is Ownable {
         require(_votes.current >= _voteCount, "un know current");
     }
 
-    function Register(address _address) public onlyOwner {
+    function Register(address _address) public payable {
         require(Votes[_address].registered == false, 'already registered');
 
         votes memory _votes = Votes[_address];
         
         if(_votes.registered == false) {
-        //    //redundent iff  
+        //    //redundent iff  ?
+            wl[_address] = 1;
             uint toissue = vendor.issueTokens(_address);
             uint256 issued = vendor.getIssued(_address);
+
 
             _votes = votes(address(yourCollectible), issued, issued, 0, true);
             Votes[_address] = _votes;
