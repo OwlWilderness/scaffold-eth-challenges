@@ -17,7 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   // Todo: deploy the contract
    await deploy("Moderator", {
      from: deployer,
-     args: [vendor.address, yourCollection.address, yourToken.address], // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+     args: [yourToken.address, yourCollection.address, vendor.address], // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
      log: true,
      value: ethers.utils.parseEther("0.00023"),
    });

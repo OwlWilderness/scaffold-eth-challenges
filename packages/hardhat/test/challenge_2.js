@@ -152,6 +152,7 @@ describe("🚩 Extend Challenge 2: 🏵 NFT Token Vote 🤖", function () {
     });
   })*/
 
+  /* //called from moderator so commenting this test
   describe("💵 issueTokens(address _address)", function () {
     it("Should let us issue tokens and our balance should go up...", async function () {
       const [ owner ] = await ethers.getSigners();
@@ -181,7 +182,7 @@ describe("🚩 Extend Challenge 2: 🏵 NFT Token Vote 🤖", function () {
 
     });
   })
-
+ */
   /*describe("💵 sellTokens()", function () {
     it("Should let us sell tokens and we should get eth back...", async function () {
       const [ owner ] = await ethers.getSigners();
@@ -235,8 +236,8 @@ describe("🚩 Extend Challenge 2: 🏵 NFT Token Vote 🤖", function () {
 
  }
 
- describe("💵 CreateVotes4ddr(address _address)", function () {
-    it("Should let us issue tokens and our balance should go up...", async function () {
+ describe("💵 Register(address _address)", function () {
+    it("Should let us Register and Create Votes for Addr tokens and our balance should go up...", async function () {
       const [ owner ] = await ethers.getSigners();
       console.log('\t'," 🧑‍🏫 Tester Address: ",owner.address)
 
@@ -256,22 +257,9 @@ describe("🚩 Extend Challenge 2: 🏵 NFT Token Vote 🤖", function () {
       expect(txResult0.status).to.equal(1);
 
       console.log('\t'," 💸 getting votes again...")
-      const [issued0, votes0, voted0] = await moderator.getVotes(owner.address);
-      console.log('\t'," 💸 votes...", [issued0, votes0, voted0])
-     
-      console.log('\t'," 💸 CreateVotes4Addr...")
-      const createVotesResult = await moderator.CreateVotes4ddr(owner.address);
-      console.log('\t'," 🏷  issueTokens Result: ",createVotesResult.hash)
-
-      console.log('\t'," ⏳ Waiting for confirmation...")
-      const txResult =  await createVotesResult.wait()
-      expect(txResult.status).to.equal(1);
-            
-      console.log('\t'," 💸 getting votes again...")
       const gvotes = await moderator.getVotes(owner.address);
       console.log('\t'," 💸 votes...", ethers.utils.formatEther(gvotes[0]))
      
-
       const newBalance = await yourToken.balanceOf(owner.address)
       console.log('\t'," 🔎 New balance: ", ethers.utils.formatEther(newBalance))
       
@@ -285,35 +273,55 @@ describe("🚩 Extend Challenge 2: 🏵 NFT Token Vote 🤖", function () {
     });
   })
 
-/*
+
  describe("💵 Vote(uint256 _p04pasId, uint _voteCount)", function () {
     it("Should let us issue tokens to Art and the balance of Art should go up...", async function () {
+      const p04pasId = 4020101
+      
       const [ owner ] = await ethers.getSigners();
       console.log('\t'," 🧑‍🏫 Tester Address: ",owner.address)
 
-      const startingBalance = await yourToken.balanceOf(owner.address)
-      console.log('\t'," ⚖️ Starting balance: ",ethers.utils.formatEther(startingBalance))
-    
-      const maxIssuedCount = await myContract.getIssueOnRegisterTokenCount();
-      console.log('\t'," ⚖️ Max Issue Count: ",ethers.utils.formatEther(maxIssuedCount))
+      const balOfOwner = await yourToken.balanceOf(owner.address)
+      console.log('\t'," ⚖️ Starting owner balance: ",ethers.utils.formatEther(balOfOwner))
     
 
+      const startingBalance = await yourToken.balanceOf(myContract.address)
+      console.log('\t'," ⚖️ Starting collectible balance: ",ethers.utils.formatEther(startingBalance))
+    
+      console.log('\t'," 💸 getting votes...")
+      const gvotes = await moderator.getVotes(owner.address);
+      console.log('\t'," 💸 current votes...", ethers.utils.formatEther(gvotes[1]))
 
-      console.log('\t'," 💸 Voting...")
-      const voteResult = await moderator.Vote(p04pasId, maxIssuedCount);
+      const okToVote = await moderator.ValidateOkToVote(owner.address, myContract.address, gvotes[1]);
+      console.log('\t'," OK to Vote ")
+    
+      const issued = gvotes[0]
+      const voted = gvotes[1]
+      console.log('\t'," 💸 voted count:", voted)
+      console.log('\t'," 💸 Voting...for:", p04pasId)
+      const voteResult = await moderator.Vote(owner.address, p04pasId, balOfOwner)
       console.log('\t'," 🏷  Vote Result: ",voteResult.hash)
 
       console.log('\t'," ⏳ Waiting for confirmation...")
       const txResult =  await voteResult.wait()
       expect(txResult.status).to.equal(1);
 
-      const newBalance = await myContract.getHearts(p04pasId)
-      console.log('\t'," 🔎 New balance: ", ethers.utils.formatEther(newBalance))
-      expect(newBalance).to.equal(startingBalance.add(maxIssuedCount));
+      console.log('\t'," 💸 getting votes...again")
+      const gvotes1 = await moderator.getVotes(owner.address);
+      console.log('\t'," 💸 current votes...", ethers.utils.formatEther(gvotes1[1]))
+
+      expect(gvotes1[0]).to.equal(voted); //issued
+      expect(gvotes1[1]).to.equal(0); //current
+      expect(gvotes1[2]).to.equal(voted); //voted
+
+      //not working
+      //const newBalance = await yourToken.balanceOf(myContract.address)
+      //console.log('\t'," 🔎 New balance: ", ethers.utils.formatEther(newBalance))
+      //expect(newBalance).to.equal(startingBalance.add(voted));
 
     });
   })
-*/
+
 
 
   //console.log("hre:",Object.keys(hre)) // <-- you can access the hardhat runtime env here

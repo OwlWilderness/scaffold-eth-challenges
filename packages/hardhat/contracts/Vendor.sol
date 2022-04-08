@@ -44,15 +44,22 @@ contract Vendor is Ownable {
     MaxTokensToIssue = yourCollectible.getIssueOnRegisterTokenCount();
   }
 
-  function issueTokens(address _address) public returns (uint){
+
+  function issueTokens(address _address) external returns (uint){
     //verify tokens can be issued and only issue up to max per address
     uint maxCanIssue = MaxTokensToIssue;
     uint issued = Issued[_address];
     uint toIssue = (issued <= maxCanIssue) ? (maxCanIssue - issued) : 0 ;    
-    require(toIssue > 0, "total issued exceed max tokens for this address");
+    
+    //dont error, lets just return 0
+    //require(toIssue > 0, "total issued exceed max tokens for this address");
+    if(toIssue == 0) {
+      return 0;
+    }
 
     //issue tokens to address
     yourToken.transfer(_address, toIssue);
+    yourToken.increaseAllowance(_address, toIssue);
     Issued[_address] = issued + toIssue;
 
     //return number of issued tokens

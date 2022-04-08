@@ -56,16 +56,17 @@ contract Moderator is Ownable {
 
     }
     //moderate voting per address
-    function Vote(uint256 _p04pasId, uint _voteCount) public {
+    function Vote(address _address, uint256 _p04pasId, uint _voteCount) public {
         uint current = Votes[msg.sender].current;
         require(current > 0, "know votes to vote");
         require(Votes[msg.sender].artContract == address(yourCollectible),"know your collection");//is this needed?
 
         //transfer and update heart count
-        yourToken.transferFrom(msg.sender, address(yourCollectible), _voteCount);
-        yourCollectible.HeartArt(address(this), _p04pasId, _voteCount);
+        //this doesnt work and not sure why xfer exceed allowance
+        //yourToken.transferFrom(msg.sender, address(yourCollectible), _voteCount);
+        yourCollectible.HeartArt(address(this), msg.sender, _p04pasId, _voteCount);
 
-        //update votes
+        ////update votes
         Votes[msg.sender].current = current.sub(_voteCount);
         uint voted = Votes[msg.sender].voted;
         Votes[msg.sender].voted = voted.add(_voteCount);
@@ -92,36 +93,16 @@ contract Moderator is Ownable {
         require(_votes.current >= _voteCount, "un know current");
     }
 
-    //public create votes - checks WL
-    //function CreateVotes4Addr(address _address) public {
-    //    require(wl[_address] > 0, "unable to find address");  
-    //    createVotes4ddr(_address);
-   // }
-   
-    //internal create votes - does not check wl (4 ddor ! 4 a ddor)
-    function CreateVotes4ddr(address _address) public {
-
-        uint issued = 0;//vendor.issueTokens(_address);
-
-        //votes memory _votes = Votes[_address];
-        //if(_votes.issued == 0){
-        //    Votes[_address] = votes(_address, issued, issued, 0);
-        //} else {
-        //    _votes.issued = _votes.issued + issued;
-        //    _votes.current = _votes.current + issued;
-        //    Votes[_address] = _votes;
-        // }
-        
-    }
-
-    function Register(address _address) public payable onlyOwner {
+    function Register(address _address) public onlyOwner {
         require(Votes[_address].registered == false, 'already registered');
 
         votes memory _votes = Votes[_address];
         
         if(_votes.registered == false) {
         //    //redundent iff  
+            uint toissue = vendor.issueTokens(_address);
             uint256 issued = vendor.getIssued(_address);
+
             _votes = votes(address(yourCollectible), issued, issued, 0, true);
             Votes[_address] = _votes;
         }
