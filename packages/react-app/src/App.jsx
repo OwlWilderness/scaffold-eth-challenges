@@ -284,7 +284,13 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
+  const registerEvents = useEventListener(readContracts, "Moderator", "RegisterEvent", localProvider, 1);
+  console.log("📟 Register events:", registerEvents);
   //
+
+  const heartArtEvents = useEventListener(readContracts, "Moderator", "HeartArtEvent", localProvider, 1);
+  console.log("📟 Heart Art events:", heartArtEvents);
+
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
@@ -295,7 +301,7 @@ function App(props) {
       const collectibleUpdate = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
+          console.log("Getting token index", tokenIndex);
           const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
@@ -715,11 +721,13 @@ function App(props) {
     //if(writeContracts.YourCollectible.LastMintedIndex > count){
     //  setCount(writeContracts.YourCollectible.LastMintedIndex);
     //}
-    //const itemToMint = await readContracts.YourCollectible.getLastMintedIndex();
-    //console.log(itemToMint);
+    const itemToMint = await readContracts.YourCollectible.getLastMintedIndex();
+    const mintItem = itemToMint.toNumber() + 1;
+    console.log("LastMintedIndex", mintItem);
+
     //how do I get the above to work with the count here:
-    const uploaded = await ipfs.add(JSON.stringify(p04pasjson[count]));
-    setCount(count + 1);
+    const uploaded = await ipfs.add(JSON.stringify(p04pasjson[mintItem]));
+    setCount(mintItem);   
     console.log("Uploaded Hash: ", uploaded);
     const result = tx(
       writeContracts &&
@@ -851,8 +859,8 @@ function App(props) {
                 shape="round"
                 size="large"
                 onClick={() => {
-                  register();
-                  getVotes();
+                  register()
+                  getVotes()
                 }}
               >
                Register
@@ -860,6 +868,10 @@ function App(props) {
 
               <label> My HEART count: {hearts} </label>
            
+            </div>
+            <div>Known Issues: 
+              <li>HEART count does not display after Registration (click Register Again)</li>
+              <li>Hearted count does not display after : below image after clicking 'Heart Art' (refresh page)</li>
             </div>
             <div style={{ width: "auto", margin: "auto", marginTop: "auto", paddingBottom: "auto" }}>
               <List
@@ -890,11 +902,10 @@ function App(props) {
                         <Button
                           onClick={() => {
                             heartArt(id)
-                            getVotes()
                            }}
                         >
                           Heart Art
-                        </Button>
+                        </Button> 
                         </div>
                       <div>
                         {/*owner:{" "}

@@ -14,9 +14,7 @@ import "./Vendor.sol";
 contract Moderator is Ownable {
     using SafeMath for uint;
     using SafeMath for uint256;
-    
-    //delcare variables
- 
+
     struct votes{
         address artContract;   //contract with submissions to vote on
         uint issued;        //possibly limited by related contract 
@@ -25,9 +23,13 @@ contract Moderator is Ownable {
         bool registered;    //these votes are registered
     }
 
- //mappings
+    //mappings
     mapping(address => votes) public Votes;
     mapping(address => uint) public wl;
+
+    //events
+    event HeartArtEvent();
+    event RegisterEvent();
 
     //declare contracts
     Vendor public vendor;
@@ -70,6 +72,7 @@ contract Moderator is Ownable {
         Votes[msg.sender].current = current.sub(_voteCount);
         uint voted = Votes[msg.sender].voted;
         Votes[msg.sender].voted = voted.add(_voteCount);
+        emit HeartArtEvent();
     }
     //- require votes <= max votes - 
     //- track issued votes
@@ -107,6 +110,7 @@ contract Moderator is Ownable {
 
             _votes = votes(address(yourCollectible), issued, issued, 0, true);
             Votes[_address] = _votes;
+            emit RegisterEvent();
         }
     }
 }
