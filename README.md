@@ -34,7 +34,7 @@ Original Source: https://github.com/scaffold-eth/scaffold-eth-challenges
 Intention: Allow users to vote on Artist Submissions to a Collection with HEART tokens.  
 
 ## Thanks
-Thank you to POAPAthon Lowenphast#3449 for taking the time and providing feedback on the application.
+Thank you to POAPAthon Artist Lowenphast#3449 for taking the time and providing feedback on the application.
 
 ### Ideas
 * enable vendor so hearts are purchased - (re-evalate KN03 )
