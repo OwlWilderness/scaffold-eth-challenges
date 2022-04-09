@@ -11,9 +11,11 @@ The initial challenges are at [SpeedRunEthereum.com](https://speedrunethereum.co
 
 💬 If you have not you can join the telegram [Challenge 0 telegram](https://t.me/+Y2vqXZZ_pEFhMGMx)!!!
 
+## Note - long initial load time ***
+
 ##
 Test on Rinkeby: https://poap4peace-heart-v01.surge.sh/
-Contract: 
+ 
 ## Source
 
 Original Source: https://github.com/scaffold-eth/scaffold-eth-challenges
@@ -51,6 +53,7 @@ Intention: Allow users to vote on Artist Submissions to a Collection with HEART 
 * * KI04a Voter Address HEART count
 * * KI04b Heart Count below Artist Submission next to P04PAS ID 
 * KI05: yourCollectible owner is the minter - should be transfered to moderator
+* KI06: long load time
 
 
 
