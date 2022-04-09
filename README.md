@@ -20,9 +20,6 @@ Test on Rinkeby: https://poap4peace-heart-v01.surge.sh/
 Original Source: https://github.com/scaffold-eth/scaffold-eth-challenges
 > Forked Source: https://github.com/OwlWilderness/scaffold-eth-challenges/tree/forest
 
-## Thanks
-Thank you to POAPAthon Lowenphast#3449 for taking the time and providing feedback on the application.
-
 ### Contracts (From Challenge)
 * > YourCollectible - (Challenge 0) : POAP for PEACE Artist Submissions (P04PAS) https://rinkeby.etherscan.io/address/0x216eec15617fB82E83f7eEf08Ea11Bd6F226AACF#code
 * > YourToken - (Challege 2) : HEART token used to vote https://rinkeby.etherscan.io/address/0x846D7e0a8b54Cc818bE71d3D3a4fC5e71362d7f5#code
@@ -35,6 +32,9 @@ Thank you to POAPAthon Lowenphast#3449 for taking the time and providing feedbac
 > HEART - Help Empower Artist Repost Token (yourToken)
 
 Intention: Allow users to vote on Artist Submissions to a Collection with HEART tokens.  
+
+## Thanks
+Thank you to POAPAthon Lowenphast#3449 for taking the time and providing feedback on the application.
 
 ### Ideas
 * enable vendor so hearts are purchased - (re-evalate KN03 )
@@ -58,12 +58,15 @@ Intention: Allow users to vote on Artist Submissions to a Collection with HEART 
 * * KI04b Heart Count below Artist Submission next to P04PAS ID 
 * KI05: yourCollectible owner is the minter - should be transfered to moderator
 * KI06: long load time
-* > KI07: Transactions need signing - especially because they are spending eth on gas
+
+
+2022.04.09 Feedback:
+* KI07: Transactions need signing - especially because they are spending eth on gas
 * ** KI07a On Register
 * ** KI07b On Heart Art
-* > KI08: not all nfts display for everyone - some appear as broken links
-* > KI09: add instructions for use
-* maybe hide the burner wallet?
+* KI08: not all nfts display for everyone - some appear as broken links
+* KI09: add instructions for use
+* KI10: maybe hide the burner wallet?
 
 
 
