@@ -61,7 +61,7 @@ Thank you to POAPAthon Artist Lowenphast#3449 for taking the time and providing 
 
 
 2022.04.09 Feedback:
-* KI07: Transactions need signing - especially because they are spending eth on gas
+* KI07: Transactions need signing - especially because they are spending eth on gas OR better yet just sign and no gas
 * ** KI07a On Register
 * ** KI07b On Heart Art
 * KI08: not all nfts display for everyone - some appear as broken links
