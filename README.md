@@ -17,10 +17,11 @@ The initial challenges are at [SpeedRunEthereum.com](https://speedrunethereum.co
 Test on Rinkeby: https://poap4peace-heart-v01.surge.sh/
  
 ## Source
-
 Original Source: https://github.com/scaffold-eth/scaffold-eth-challenges
+> Forked Source: https://github.com/OwlWilderness/scaffold-eth-challenges/tree/forest
 
-Forked Source: https://github.com/OwlWilderness/scaffold-eth-challenges/tree/forest
+## Thanks
+Thank you to POAPAthon Lowenphast#3449 for taking the time and providing feedback on the application.
 
 ### Contracts (From Challenge)
 * > YourCollectible - (Challenge 0) : POAP for PEACE Artist Submissions (P04PAS) https://rinkeby.etherscan.io/address/0x216eec15617fB82E83f7eEf08Ea11Bd6F226AACF#code
@@ -45,17 +46,24 @@ Intention: Allow users to vote on Artist Submissions to a Collection with HEART 
 * allows one Register(address) at a time - would be nice to extend the registration 
 * transfer ownership of collectible to moderator and display collectibles from moderator : KI05
 
-### Known Issues (KNnn)
+### Known Issues (KNnn) / BUGs 
 * KI01: when testing it waits for an event in the browser after minting to continue the test (on localhost anyway)
-* > ~~KI02: if webpage is refreshed the counter resets and minting a new item will revert to 0.~~
+* ~~KI02: if webpage is refreshed the counter resets and minting a new item will revert to 0.~~
 * KI03: when voting: token does not transfer to collectible (code commented)
 * KI04: heart counts do not update after Heart Art action 
-* * KI04a Voter Address HEART count
+* * KI04a Voter Address HEART count 
+* ** KI04a1 - after register click
+* ** KI04a2 - on page refresh
+* ** KI04a3 - after voting
 * * KI04b Heart Count below Artist Submission next to P04PAS ID 
 * KI05: yourCollectible owner is the minter - should be transfered to moderator
 * KI06: long load time
-
-
+* > KI07: Transactions need signing - especially because they are spending eth on gas
+* ** KI07a On Register
+* ** KI07b On Heart Art
+* > KI08: not all nfts display for everyone - some appear as broken links
+* > KI09: add instructions for use
+* maybe hide the burner wallet?
 
 
 
