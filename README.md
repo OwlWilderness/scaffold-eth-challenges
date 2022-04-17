@@ -36,6 +36,7 @@ Intention: Allow users to vote on Artist Submissions to a Collection with HEART 
 ## Thanks
 * Thank you to POAPAthon Artist Lowenphast#3449 for taking the time and providing feedback on the application.
 * Thank you POAPAthon bestadon#8703 for helping wiht the console logging / debug of rate limiting
+* Thank you POAPAThon - cool community and also 🥚 there might be an Easter POAPAthon POAP here: 🐰 https://poap.website/hiddenpoapathoneggs 🌷
 
 ### Ideas
 * enable vendor so hearts are purchased - (re-evalate KN03 )
