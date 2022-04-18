@@ -57,7 +57,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost;//.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -272,7 +272,8 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
   
-  const deployer = "0x0a5d50420626f4ac60939a04bc4f3e3781dcf1a8";
+  const deployer = address; //"0x0a5d50420626f4ac60939a04bc4f3e3781dcf1a8";
+
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [deployer]);
   console.log("🤗 balance:", balance);
@@ -312,15 +313,18 @@ function App(props) {
           const hearts = await readContracts.YourCollectible.getHearts(tokenId);
           console.log("HEARTs:", hearts);
 
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          const imguri = await readContracts.YourCollectible.getImgUri(tokenId);
+          console.log("Img URI:", imguri);
+
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "").replace("ipfs://", "");
           console.log("ipfsHash", ipfsHash);
 
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
+          console.log("jsonManifest", jsonManifestBuffer.toString());
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: deployer, hearts: hearts, ...jsonManifest });
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: deployer, hearts: hearts, imguri: imguri, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -724,17 +728,22 @@ function App(props) {
     //  setCount(writeContracts.YourCollectible.LastMintedIndex);
     //}
     const itemToMint = await readContracts.YourCollectible.getLastMintedIndex();
-    const mintItem = itemToMint.toNumber() + 1;
-    console.log("LastMintedIndex", mintItem);
+    const idxToMint = itemToMint.toNumber() + 1;
+    console.log("LastMintedIndex", idxToMint);
+
+    //const uri = "bafybeig7iqimx34jbobrziszjvoqv56jjekgrkonek5ojpgfny3dqlqkgq.ipfs.nftstorage.link/";
+    const path = await readContracts.YourCollectible.GetMetadataUri(idxToMint);
+    console.log("Metadata URI: ", path);
 
     //how do I get the above to work with the count here:
-    const uploaded = await ipfs.add(JSON.stringify(p04pasjson[mintItem]));
-    setCount(mintItem);   
-    console.log("Uploaded Hash: ", uploaded);
+    //const uploaded = await ipfs.add(JSON.stringify(p04pasjson[mintItem]));
+    //setCount(idxToMint);   
+    //console.log("Uploaded Hash: ", uploaded);
     const result = tx(
       writeContracts &&
         writeContracts.YourCollectible &&
-        writeContracts.YourCollectible.mintItem(address, uploaded.path),
+        //writeContracts.YourCollectible.mintItem(deployer, path),
+        writeContracts.YourCollectible.mintItemUsingLastIndex(deployer),
       update => {
         console.log("📡 Transaction Update:", update);
         if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -884,6 +893,7 @@ function App(props) {
                 renderItem={item => {
                   const id = item.name
                   const hearts = item.hearts
+                  const img_ = "https://" + item.imguri//.replace("ipfs://","http://ipfs.io/ipfs/")
                   console.log("hearts:" + hearts)
 
                   return (
@@ -896,7 +906,7 @@ function App(props) {
                         }
                       >
                         <div>
-                          <img src={item.image} alt={id} style={{ maxWidth: 150 }} />
+                          <img src={img_} alt={id} style={{ maxWidth: 150 }} />
                         </div>
                         <div>{id}:{hearts.toString()}</div>
                       </Card>
