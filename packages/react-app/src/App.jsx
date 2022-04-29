@@ -280,7 +280,8 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
    const myhearts = useContractReader(readContracts, "Moderator", "Votes", [address]);
-  console.log("🤗 heart:", myhearts ? myhearts[0] : 'loading...');
+   const hearts = myhearts ? myhearts[2] : 0;
+  console.log("🤗 heart:", myhearts ? myhearts[2] : 'loading...');
 
   // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
@@ -539,7 +540,7 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
-  const [hearts, setHearts] = useState(0);
+
 
   // the json for the nfts
   /*const json = {
@@ -881,15 +882,17 @@ function App(props) {
 
               <Input
               prefix="Heart Count: "
-              disabled
-              value={myhearts}
-              placeholder={"" + (myhearts ? myhearts : "loading...")}
-            />
-             {/* <label> My HEART count: {hearts} </label> */}
+              readOnly
+              value={hearts}
+              placeholder={"" + (hearts ? hearts : "loading...")}
+            /> 
+             {/* <label> My HEART count: {hearts} </label>*/}
            
             </div>
-            <div>Known Issues: 
-              <li>HEART count does not display after Registration (click Register Again)</li>
+            <div>Notes
+            <li>this is a POC to vote on art - the art on this site is from poapathon artists</li>
+            <li>click on register to gain 2 hearts</li>
+            <li>click on heart art under the art you want to vote for</li>
               <li>Hearted count does not display after : below image after clicking 'Heart Art' (refresh page)</li>
             </div>
             <div style={{ width: "auto", margin: "auto", marginTop: "auto", paddingBottom: "auto" }}>

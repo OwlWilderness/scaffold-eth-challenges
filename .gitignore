@@ -65,3 +65,4 @@ yarn.lock
 *.tsbuildinfo
 *.stackdump
 packages/react-app/src/constants.js
+packages/react-app/src/constants.js
