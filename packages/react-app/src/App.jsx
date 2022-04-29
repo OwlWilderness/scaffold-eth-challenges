@@ -279,8 +279,8 @@ function App(props) {
   console.log("🤗 balance:", balance);
 
   // keep track of a variable from the contract in the local React state:
-  //const hearts = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
-  //console.log("🤗 heart:", hearts);
+   const myhearts = useContractReader(readContracts, "Moderator", "Votes", [address]);
+  console.log("🤗 heart:", myhearts ? myhearts[0] : 'loading...');
 
   // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
@@ -288,6 +288,9 @@ function App(props) {
 
   const registerEvents = useEventListener(readContracts, "Moderator", "RegisterEvent", localProvider, 1);
   console.log("📟 Register events:", registerEvents);
+
+  const currentHearts = useEventListener(readContracts, "Moderator", "CurrentHearts", localProvider, 1);
+  console.log("📟 Heart events:", currentHearts);
   //
 
   const heartArtEvents = useEventListener(readContracts, "Moderator", "HeartArtEvent", localProvider, 1);
@@ -871,13 +874,18 @@ function App(props) {
                 size="large"
                 onClick={() => {
                   register()
-                  getVotes()
                 }}
               >
                Register
               </Button>
 
-              <label> My HEART count: {hearts} </label>
+              <Input
+              prefix="Heart Count: "
+              disabled
+              value={myhearts}
+              placeholder={"" + (myhearts ? myhearts : "loading...")}
+            />
+             {/* <label> My HEART count: {hearts} </label> */}
            
             </div>
             <div>Known Issues: 

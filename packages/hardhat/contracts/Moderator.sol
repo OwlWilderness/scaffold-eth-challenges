@@ -28,8 +28,9 @@ contract Moderator is Ownable {
     mapping(address => uint) public wl;
 
     //events
-    event HeartArtEvent();
-    event RegisterEvent();
+    event HeartArtEvent(uint);
+    event RegisterEvent(address);
+    event CurrentHearts(uint);
 
     //declare contracts
     Vendor public vendor;
@@ -47,10 +48,19 @@ contract Moderator is Ownable {
         _initVotesWL();        
     }
 
-    function getVotes(address _address) public view returns (uint, uint, uint){
+    function getVotes(address _address) public returns (uint, uint, uint){
         votes memory thisVote = Votes[_address];
+        emit CurrentHearts(Votes[_address].current);
         return(thisVote.issued, thisVote.current, thisVote.voted);
+        
     }
+
+    function myHearts() public returns (uint) {
+        uint currentHearts = Votes[msg.sender].current;
+        emit CurrentHearts(currentHearts);
+        return currentHearts;
+    }
+
     //mint collection - *(currently this is manual)
 
     //issue voting tokens (hearts) to WL 
@@ -72,7 +82,8 @@ contract Moderator is Ownable {
         Votes[msg.sender].current = current.sub(_voteCount);
         uint voted = Votes[msg.sender].voted;
         Votes[msg.sender].voted = voted.add(_voteCount);
-        emit HeartArtEvent();
+        emit HeartArtEvent(Votes[msg.sender].voted);
+        emit CurrentHearts(Votes[msg.sender].current);
     }
     //- require votes <= max votes - 
     //- track issued votes
@@ -110,7 +121,8 @@ contract Moderator is Ownable {
 
             _votes = votes(address(yourCollectible), issued, issued, 0, true);
             Votes[_address] = _votes;
-            emit RegisterEvent();
+            emit RegisterEvent(_address);
         }
+        emit CurrentHearts(Votes[_address].current);
     }
 }
