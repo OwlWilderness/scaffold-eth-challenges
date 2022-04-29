@@ -1,6 +1,7 @@
-# 🏗 scaffold-eth | 🏰 BuidlGuidl
+ Fork of 🏗 scaffold-eth | 🏰 BuidlGuidl - NFT Voting System
 
-## 🚩 Extension of Challenge 0 & 2: 🎟 Vote for YourCollectible with Your Token 🤓
+## 🚩 Extension of Speed Run Ethereum Challenge 0 & 2: 🎟 
+Vote for YourCollectible with Your Token 🤓
 
 🎫 This NFT voting applicaiton was created from a fork of the first three Speed Run Ethereum challenges on scaffold-eth. 
 
@@ -11,7 +12,18 @@ The initial challenges are at [SpeedRunEthereum.com](https://speedrunethereum.co
 
 💬 If you have not you can join the telegram [Challenge 0 telegram](https://t.me/+Y2vqXZZ_pEFhMGMx)!!!
 
-## Note - long initial load time ***
+## Thanks
+* Thank you to POAPAthon Artist Lowenphast#3449 for taking the time and providing feedback on the application.
+* Thank you POAPAthon bestadon#8703 for helping wiht the console logging / debug of rate limiting
+* Thank you POAPAthon! - very cool community! and also... 🥚 if you are looking for the POAPAthon POAP you may want go here: 🐰  https://github.com/scaffold-eth/scaffold-eth-challenges/tree/challenge-1-decentralized-staking 🌷 and search for a 'Test it!' section.
+
+## Status 
+#### WIP
+- KI08: not all nfts display for everyone - some appear as broken links
+
+#### Notes
+- long initial load time ***
+- see known issues below
 
 ##
 Test on Rinkeby: https://poap4peace-heart-v01.surge.sh/
@@ -33,19 +45,18 @@ Original Source: https://github.com/scaffold-eth/scaffold-eth-challenges
 
 Intention: Allow users to vote on Artist Submissions to a Collection with HEART tokens.  
 
-## Thanks
-* Thank you to POAPAthon Artist Lowenphast#3449 for taking the time and providing feedback on the application.
-* Thank you POAPAthon bestadon#8703 for helping wiht the console logging / debug of rate limiting
-
 ### Ideas
 * enable vendor so hearts are purchased - (re-evalate KN03 )
 
 ### TODO
-* automate (or something) the minting : ~~KN02~~
-* add time limits to vote
-* > add WL upload and register. WL is currently hardcoded to deployer and contracts - WL could/should? be hodlrs of a token.
-* allows one Register(address) at a time - would be nice to extend the registration 
-* transfer ownership of collectible to moderator and display collectibles from moderator : KI05
+* T01: automate (or something) the minting : ~~KN02~~
+* T02: add time limits to vote
+* T04: > add WL upload and register. WL is currently hardcoded to deployer and contracts - WL could/should? be hodlrs of a token.
+* T05: allows one Register(address) at a time - would be nice to extend the registration 
+* T06: transfer ownership of collectible to moderator and display collectibles from moderator : KI05
+
+#### Notes
+- removed counter for minting and always use LastMintIndex (T01)
 
 ### Known Issues (KNnn) / BUGs 
 * KI01: when testing it waits for an event in the browser after minting to continue the test (on localhost anyway)
@@ -60,15 +71,17 @@ Intention: Allow users to vote on Artist Submissions to a Collection with HEART 
 * KI05: yourCollectible owner is the minter - should be transfered to moderator
 * KI06: long load time
 
-
 2022.04.09 Feedback:
 * KI07: Transactions need signing - especially because they are spending eth on gas OR better yet just sign and no gas
 * ** KI07a On Register
 * ** KI07b On Heart Art
-* KI08: not all nfts display for everyone - some appear as broken links
+* **KI08: not all nfts display for everyone - some appear as broken links**
 * KI09: add instructions for use
 * KI10: maybe hide the burner wallet?
 
+#### KI08 Notes
+- rate limited in UI here: const jsonManifestBuffer = await getFromIPFS(ipfsHash); 
+- modified to build the uri in the collectible contract
 
 
 ### 🖨 Minting 
