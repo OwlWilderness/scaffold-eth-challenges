@@ -19,7 +19,7 @@ The initial challenges are at [SpeedRunEthereum.com](https://speedrunethereum.co
 
 ## Status 
 #### WIP
-- KI08: not all nfts display for everyone - some appear as broken links
+- ~~KI08: not all nfts display for everyone - some appear as broken links~~
 
 #### Notes
 - long initial load time ***
@@ -59,15 +59,15 @@ Intention: Allow users to vote on Artist Submissions to a Collection with HEART 
 - removed counter for minting and always use LastMintIndex (T01)
 
 ### Known Issues (KNnn) / BUGs 
-* KI01: when testing it waits for an event in the browser after minting to continue the test (on localhost anyway)
+* ~~KI01: when testing it waits for an event in the browser after minting to continue the test (on localhost anyway)~~
 * ~~KI02: if webpage is refreshed the counter resets and minting a new item will revert to 0.~~
 * KI03: when voting: token does not transfer to collectible (code commented)
-* KI04: heart counts do not update after Heart Art action 
-* * KI04a Voter Address HEART count 
-* ** KI04a1 - after register click
-* ** KI04a2 - on page refresh
-* ** KI04a3 - after voting
-* * KI04b Heart Count below Artist Submission next to P04PAS ID 
+~~* KI04: heart counts do not update after Heart Art action ~~
+* ~~* KI04a Voter Address HEART count ~~
+* ~~** KI04a1 - after register click~~
+* ~~** KI04a2 - on page refresh~~
+* ~~** KI04a3 - after voting~~
+* ~~* KI04b Heart Count below Artist Submission next to P04PAS ID ~~
 * KI05: yourCollectible owner is the minter - should be transfered to moderator
 * KI06: long load time
 
