@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./YourToken.sol";
 import "./YourCollectible.sol";
 
+//Originally from:
 //Eth Speed Run 
 //Challenge 2 - Token Vendor
 //Submitted: 2022Mar28 - first submmission 
@@ -41,7 +42,7 @@ contract Vendor is Ownable {
 
   //todo - allow your collectible to set
   function _setMaxTokensToFromCollectible() private {
-    MaxTokensToIssue = yourCollectible.getIssueOnRegisterTokenCount();
+    MaxTokensToIssue = yourCollectible.IssueOnRegisterTokenCount();
   }
 
 

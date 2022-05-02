@@ -52,9 +52,9 @@ module.exports = {
       url: "http://localhost:8545",
       // notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
       // (you can put in a mnemonic here to set the deployer locally)
-      //accounts: {
-      //  mnemonic: mnemonic(),
-      //},      
+      accounts: {
+        mnemonic: mnemonic(),
+      },      
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/58daabf0f6e3462aa9aef8ccb9f4ead4", // <---- YOUR INFURA ID! (or it won't work)

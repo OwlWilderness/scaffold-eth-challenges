@@ -28,19 +28,17 @@ contract Moderator is Ownable {
     mapping(address => uint) public wl;
 
     //events
-    event HeartArtEvent(uint);
-    event RegisterEvent(address);
-    event CurrentHearts(uint);
+    event HeartArtEvent(address, votes);
+    event RegisterEvent(address, votes);
 
     //declare contracts
     Vendor public vendor;
     YourToken public yourToken;
     YourCollectible public yourCollectible;
 
+
     constructor(address _adrToken, address _adrCollectible, address _adrVendor) public payable {
         yourCollectible = YourCollectible(_adrCollectible);
-        //exampleExternalContract = ExampleExternalContract(_adrExternalContract);
-        //staker = Staker(_adrStaker);
         yourToken = YourToken(_adrToken);
         vendor = Vendor(_adrVendor);
 
@@ -48,28 +46,20 @@ contract Moderator is Ownable {
         _initVotesWL();        
     }
 
-    function getVotes(address _address) public returns (uint, uint, uint){
+    function getVotes(address _address) public view returns (uint, uint, uint){
         votes memory thisVote = Votes[_address];
-        emit CurrentHearts(Votes[_address].current);
         return(thisVote.issued, thisVote.current, thisVote.voted);
-        
     }
 
-    function myHearts() public returns (uint) {
-        uint currentHearts = Votes[msg.sender].current;
-        emit CurrentHearts(currentHearts);
-        return currentHearts;
+    function myHearts() public view returns (uint) {
+        return Votes[msg.sender].current;
     }
 
     //mint collection - *(currently this is manual)
 
-    //issue voting tokens (hearts) to WL 
-    function _issueInitialTokens () internal {
-
-    }
     //moderate voting per address
-    function Vote(address _address, uint256 _p04pasId, uint _voteCount) public {
-        uint current = Votes[msg.sender].current;
+    function Vote(uint256 _p04pasId, uint _voteCount) public onlyWl {
+        uint current =  myHearts();
         require(current > 0, "know votes to vote");
         require(Votes[msg.sender].artContract == address(yourCollectible),"know your collection");//is this needed?
 
@@ -82,47 +72,55 @@ contract Moderator is Ownable {
         Votes[msg.sender].current = current.sub(_voteCount);
         uint voted = Votes[msg.sender].voted;
         Votes[msg.sender].voted = voted.add(_voteCount);
-        emit HeartArtEvent(Votes[msg.sender].voted);
-        emit CurrentHearts(Votes[msg.sender].current);
+        emit HeartArtEvent(msg.sender, Votes[msg.sender]);
     }
     //- require votes <= max votes - 
     //- track issued votes
 
     //hackeysack of WL addresses:
-    function _initVotesWL() internal {
-        
-        wl[address(this)] = 1;
-        wl[address(yourCollectible)] = 1;
-        wl[address(yourToken)] = 1;
-        wl[address(vendor)] = 1;
-        wl[address(msg.sender)] = 1;
-        wl[0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266] = 1;
-     }
+    function _initVotesWL() internal {     
+        _addWl(address(this));
+        _addWl(address(yourCollectible));
+        _addWl(address(yourToken));
+        _addWl(address(vendor));
+        _addWl(address(msg.sender));
+        _addWl(0x7F68704858CB70dF2cdDF8cF1bAb8Ec5708B023d);
+        _addWl(0x0a5D50420626F4AC60939A04bC4f3e3781dCF1a8);
+        _addWl(0xa2a858f76e4e53e5cf64d8BB38d164F128062e5d);
+        _addWl(0xc90Ecdf38215b20f4CE7A8A1346E32F78cC3B909);
+    }
 
+    function _addWl (address _address) internal {
+        wl[_address] = 1;
+    }
+
+    function AddWL (address _address) public onlyOwner {
+        _addWl(_address);
+    }
     
-    function ValidateOkToVote(address _address, address _adrCollectible, uint _voteCount) public view {
-        require(wl[_address] > 0, "un able to find address");
+    modifier onlyWl() {
+        require(wl[msg.sender] > 0, "hmm... unsure of that address");
+        _;
+    }
+
+    function ValidateOkToVote(address _address, address _adrCollectible, uint _voteCount) public view onlyWl {
+        //require(wl[_address] > 0, "un able to find address");
         votes memory _votes = Votes[_address];
         require(_votes.artContract == _adrCollectible, "un known collection");
         require(_votes.current >= _voteCount, "un know current");
     }
 
-    function Register(address _address) public payable {
-        require(Votes[_address].registered == false, 'already registered');
-
-        votes memory _votes = Votes[_address];
-        
-        if(_votes.registered == false) {
-        //    //redundent iff  ?
-            wl[_address] = 1;
-            uint toissue = vendor.issueTokens(_address);
-            uint256 issued = vendor.getIssued(_address);
-
-
-            _votes = votes(address(yourCollectible), issued, issued, 0, true);
-            Votes[_address] = _votes;
-            emit RegisterEvent(_address);
+    function Register() public  {
+        votes memory _votes = Votes[msg.sender];
+        require(Votes[msg.sender].registered == false, 'already registered');
+        require(vendor.issueTokens(msg.sender) > 0, '"total issued exceed max tokens for this address');
+        if(wl[msg.sender] == 0) {
+            _addWl(msg.sender);
         }
-        emit CurrentHearts(Votes[_address].current);
+
+        uint256 issued = vendor.getIssued(msg.sender);
+        _votes = votes(address(yourCollectible), issued, issued, 0, true);
+        Votes[msg.sender] = _votes;
+        emit RegisterEvent(msg.sender, _votes);
     }
 }

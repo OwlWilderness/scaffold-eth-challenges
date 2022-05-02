@@ -41,6 +41,7 @@ contract YourCollectible is
     string public ImgCid;
     string public GatewaySuffix = ".ipfs.nftstorage.link";
 
+    bool public IsMinted = false;
     bool public IssueOnRegister = true;
     uint public IssueOnRegisterTokenCount = 2;
     uint public MaxHeartPerAddressCount = 2;
@@ -58,19 +59,8 @@ contract YourCollectible is
     }
 
 
-    function getImgCid() public view returns (string memory) {  
-        return ImgCid;
-    }
-
     function setUriPrefix(string memory _newLPrefix) public onlyOwner {
         UriPrefix = _newLPrefix;
-    }
-
-
-
-    function getHearts(uint256 _p04pasId) public view returns (uint256) {
-        uint ac = ArtConnection[_p04pasId];
-        return ArtCollection[ac].hearts;
     }
 
 
@@ -94,17 +84,11 @@ contract YourCollectible is
         return "https://ipfs.io/ipfs/";
     }
 
-    function getIssueOnRegisterTokenCount() public view returns (uint) {
-        return IssueOnRegisterTokenCount;
-    }     
-    function getLastMintedIndex() public view returns (uint256) {
-        return LastMintedIndex;
-    }                              
 
     function mintItemUsingLastIndex(address to) public returns (uint256) {
-        if(LastMintedIndex == 0){
-            LastMintedIndex = 1;
-        }
+       // if(LastMintedIndex == 0){
+       //     LastMintedIndex = 1;
+       // }
         string memory uri = GetMetadataUri(LastMintedIndex);
         return mintItem(to, uri);
     }
@@ -117,14 +101,33 @@ contract YourCollectible is
 
     }
 
+    function getHearts(uint256 _p04pasId) public view returns (uint256) {
+        uint ac = ArtConnection[_p04pasId];
+        return ArtCollection[ac].hearts;
+    }
+
+
     function getImgUri(uint256 _tokenid) public view returns (string memory) {
         uint _index = ArtConnection[_tokenid];
+        return GetImgUriFromIndex(_index);
+    }
+
+    function GetImgUriFromIndex(uint _index) public view returns (string memory){
         string memory file = ArtCollection[_index].uri;
         string memory suffix = ".gif";
         return string(abi.encodePacked(UriPrefix, ImgCid, GatewaySuffix, "/", file, suffix));
+     }
+ 
+    function GetCollectibleDataByIndex(uint _index) public view returns (uint256, string memory, uint, string memory){
+        //returns tokenId, tokenuri, hearts, imageuri 
+        uint256 tokenId = ArtCollection[_index].id;
+        string memory uri = tokenURI(tokenId);
+        uint hearts = ArtCollection[_index].hearts;
+        string memory imguri =  GetImgUriFromIndex(_index);
+        return (tokenId, uri, hearts, imguri);
     }
 
-    function mintItem(address to, string memory uri) public returns (uint256) {
+    function mintItem(address to, string memory uri) internal returns (uint256) {
         //only mint as many submissions in the collection (need to fix/sync ui/sol counter)
         require(LastMintedIndex < CollectionCount, "collection minted");
         Art memory token = ArtCollection[LastMintedIndex];
@@ -136,6 +139,9 @@ contract YourCollectible is
 
         //increment token id counter
         LastMintedIndex = LastMintedIndex.add(1);
+        if(LastMintedIndex == CollectionCount){
+            IsMinted = true;
+        }
         return tokenId;
     }
 
@@ -145,8 +151,8 @@ contract YourCollectible is
         //ideallly this would be created when a requestor uploads the artist submissions
         //this is also kind of hackish ?
         uint256 initHearts = 1 ;
-        ArtCollection[27] = Art(4020101,"P04PAS_0201_01", address(this),initHearts);
-        ArtConnection[4020101] = 27;
+        ArtCollection[0] = Art(4020101,"P04PAS_0201_01", address(this),initHearts);
+        ArtConnection[4020101] = 0;
         ArtCollection[1] = Art(4035601,"P04PAS_0356_01", address(this),initHearts);
         ArtConnection[4035601] = 1;
         ArtCollection[2] = Art(4130701,"P04PAS_1307_01", address(this),initHearts);
@@ -202,7 +208,7 @@ contract YourCollectible is
         CollectionCount = 27;
         setCarLink("bafybeie7xzvpvltkshkhkedc5rubqxxove7zb3scafl46xm3d4mzwbw4u4");
         setUriPrefix("");
-        LastMintedIndex = 1;
+        //LastMintedIndex = 1;
         setImgCid("bafybeibmkgpah5aeybl2s3errbtbr4tr7vp6q4ssiwsheks3zpoi6upwmy");
     }         
 

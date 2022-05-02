@@ -23,7 +23,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Address, AddressInput, Balance, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Address, AddressInput, Balance, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Events } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
@@ -272,63 +272,79 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
   
-  const deployer = address; //"0x0a5d50420626f4ac60939a04bc4f3e3781dcf1a8";
+  const deployer = "0x0a5d50420626f4ac60939a04bc4f3e3781dcf1a8";
 
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [deployer]);
-  console.log("🤗 balance:", balance);
+  //console.log("🤗 balance:", balance);
+
+  //const collectionCount = useContractReader(readContracts, "YourCollectible", "CollectionCount");
+  //const lastMintedIdx = useContractReader(readContracts, "YourCollectible", "LastMintedIndex");
+  const minted = useContractReader(readContracts, "YourCollectible", "IsMinted");
+
+
+//  console.log("🤗 registered:", registered);
+  
 
   // keep track of a variable from the contract in the local React state:
    const myhearts = useContractReader(readContracts, "Moderator", "Votes", [address]);
    const hearts = myhearts ? myhearts[2] : 0;
-  console.log("🤗 heart:", myhearts ? myhearts[2] : 'loading...');
+  //console.log("🤗 heart:", myhearts ? myhearts[2] : 'loading...');
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
-  console.log("📟 Transfer events:", transferEvents);
+  //const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  //console.log("📟 Transfer events:", transferEvents);
 
   const registerEvents = useEventListener(readContracts, "Moderator", "RegisterEvent", localProvider, 1);
-  console.log("📟 Register events:", registerEvents);
-
-  const currentHearts = useEventListener(readContracts, "Moderator", "CurrentHearts", localProvider, 1);
-  console.log("📟 Heart events:", currentHearts);
-  //
+ // console.log("📟 Register events:", registerEvents);
 
   const heartArtEvents = useEventListener(readContracts, "Moderator", "HeartArtEvent", localProvider, 1);
-  console.log("📟 Heart Art events:", heartArtEvents);
+  //console.log("📟 Heart Art events:", heartArtEvents);
 
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
-
+  
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  
   useEffect(() => {
     const updateYourCollectibles = async () => {
       const collectibleUpdate = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
-          console.log("Getting token index", tokenIndex);
+          //console.log("Getting token index", tokenIndex);
 
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(deployer, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
+          //const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(deployer, tokenIndex);
+          //console.log("tokenId", tokenId);
+         // const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          //console.log("tokenURI", tokenURI);
 
-          const hearts = await readContracts.YourCollectible.getHearts(tokenId);
-          console.log("HEARTs:", hearts);
+          //const hearts = await readContracts.YourCollectible.getHearts(tokenId);
+          //console.log("HEARTs:", hearts);
 
-          const imguri = await readContracts.YourCollectible.getImgUri(tokenId);
-          console.log("Img URI:", imguri);
+          //const imguri = await readContracts.YourCollectible.getImgUri(tokenId);
+         // console.log("Img URI:", imguri);
+          const collectibleData = await readContracts.YourCollectible.GetCollectibleDataByIndex(tokenIndex);
+         // console.log("collectibleData", collectibleData);
+          const tokenId = collectibleData[0];
+          const tokenURI = collectibleData[1];
+          const hearts = collectibleData[2];
+          const imguri = collectibleData[3];
 
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "").replace("ipfs://", "");
-          console.log("ipfsHash", ipfsHash);
+          //const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "").replace("ipfs://", "");
+          //console.log("ipfsHash", ipfsHash);
 
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-          console.log("jsonManifest", jsonManifestBuffer.toString());
+          //const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+          //console.log("jsonManifest", jsonManifestBuffer.toString());
+          const json = '{"description": "POAPAthon POAP 4 PEACE Artist Submission","name":"' + tokenId.toString() + '"}';
+          //console.log("json", json);
           try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: deployer, hearts: hearts, imguri: imguri, ...jsonManifest });
+            const jsonManifest = JSON.parse(json);//jsonManifestBuffer.toString());
+            //console.log("jsonManifest", jsonManifest);
+            collectibleUpdate.push({id: tokenId, uri: tokenURI, owner: deployer, hearts: hearts, imguri: imguri, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -339,7 +355,7 @@ function App(props) {
       setYourCollectibles(collectibleUpdate);
     };
     updateYourCollectibles();
-  }, [address, yourBalance]);
+  }, [address, yourBalance, hearts]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -542,135 +558,12 @@ function App(props) {
   const [count, setCount] = useState(1);
 
 
-  // the json for the nfts
-  /*const json = {
-    1: {
-      description: "It's actually a bison?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-      name: "Buffalo",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "green",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 42,
-        },
-      ],
-    } ,
-    2: {
-      description: "What is it so worried about?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/zebra.jpg",
-      name: "Zebra",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "blue",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 38,
-        },
-      ],
-    },
-    3: {
-      description: "What a horn!",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/rhino.jpg",
-      name: "Rhino",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "pink",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 22,
-        },
-      ],
-    },
-    4: {
-      description: "Is that an underbyte?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/fish.jpg",
-      name: "Fish",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "blue",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 15,
-        },
-      ],
-    },
-    5: {
-      description: "So delicate.",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/flamingo.jpg",
-      name: "Flamingo",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "black",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 6,
-        },
-      ],
-    },
-    6: {
-      description: "Raaaar!",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/godzilla.jpg",
-      name: "Godzilla",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "orange",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 99,
-        },
-      ],
-    },
-  }; */
 
   const heartArt = async (p04pasId) => {
     const result = tx(
       writeContracts &&
         writeContracts.Moderator &&
-        writeContracts.Moderator.Vote(address, p04pasId, 1),
+        writeContracts.Moderator.Vote(p04pasId, 1),
         update => {
           console.log("📡 Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -690,22 +583,13 @@ function App(props) {
   }
 
 
-  const getVotes = async () => {
-    //playing hackysack again
-    const votes = await readContracts.Moderator.getVotes(address)
-    console.log("votes", votes)
-    const current = votes[1]
-    console.log("current", current)
-    setHearts(current.toNumber())
-    //console.log("updated count: ", ethers.utils.parseEther(vs));
-  }
 
   const register = async () => {
     //register address and issue 2 heart tokens
     const result = tx(
       writeContracts &&
         writeContracts.Moderator &&
-        writeContracts.Moderator.Register(address),
+        writeContracts.Moderator.Register(),
       update => {
         console.log("📡 Transaction Update:", update);
         if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -731,13 +615,13 @@ function App(props) {
     //if(writeContracts.YourCollectible.LastMintedIndex > count){
     //  setCount(writeContracts.YourCollectible.LastMintedIndex);
     //}
-    const itemToMint = await readContracts.YourCollectible.getLastMintedIndex();
-    const idxToMint = itemToMint.toNumber() + 1;
-    console.log("LastMintedIndex", idxToMint);
+    //const itemToMint = await readContracts.YourCollectible.getLastMintedIndex();
+   //const idxToMint = itemToMint.toNumber() + 1;
+    //console.log("LastMintedIndex", idxToMint);
 
     //const uri = "bafybeig7iqimx34jbobrziszjvoqv56jjekgrkonek5ojpgfny3dqlqkgq.ipfs.nftstorage.link/";
-    const path = await readContracts.YourCollectible.GetMetadataUri(idxToMint);
-    console.log("Metadata URI: ", path);
+    //const path = await readContracts.YourCollectible.GetMetadataUri(idxToMint);
+    //console.log("Metadata URI: ", path);
 
     //how do I get the above to work with the count here:
     //const uploaded = await ipfs.add(JSON.stringify(p04pasjson[mintItem]));
@@ -782,6 +666,9 @@ function App(props) {
             >
               YourCollectibles
             </Link>
+          </Menu.Item>
+          <Menu.Item key="/events">
+          <Link to="/events">Eventlist 📜</Link>
           </Menu.Item>
           {/*<Menu.Item key="/transfers">
             <Link
@@ -860,6 +747,7 @@ function App(props) {
 
               <Button
                 disabled={minting}
+                hidden={minted}
                 shape="round"
                 size="large"
                 onClick={() => {
@@ -871,6 +759,7 @@ function App(props) {
 
               <Button
                 disabled={minting}
+                hidden={registered}
                 shape="round"
                 size="large"
                 onClick={() => {
@@ -881,7 +770,7 @@ function App(props) {
               </Button>
 
               <Input
-              prefix="Heart Count: "
+              prefix="Available Heart Count: "
               readOnly
               value={hearts}
               placeholder={"" + (hearts ? hearts : "loading...")}
@@ -890,10 +779,10 @@ function App(props) {
            
             </div>
             <div>Notes
-            <li>this is a POC to vote on art - the art on this site is from poapathon artists</li>
-            <li>click on register to gain 2 hearts</li>
-            <li>click on heart art under the art you want to vote for</li>
-              <li>Hearted count does not display after : below image after clicking 'Heart Art' (refresh page)</li>
+            <li>This is a POC to vote on art - The art on this site is from poapathon artists</li>
+            <li>Click on register to gain 2 hearts</li>
+            <li>Click on Heart Art under the art you want to vote for</li>
+            <li>All transactions cost gas</li>
             </div>
             <div style={{ width: "auto", margin: "auto", marginTop: "auto", paddingBottom: "auto" }}>
               <List
@@ -905,7 +794,7 @@ function App(props) {
                   const id = item.name
                   const hearts = item.hearts
                   const img_ = "https://" + item.imguri//.replace("ipfs://","http://ipfs.io/ipfs/")
-                  console.log("hearts:" + hearts)
+                 // console.log("hearts:" + hearts)
 
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
@@ -919,7 +808,7 @@ function App(props) {
                         <div>
                           <img src={img_} alt={id} style={{ maxWidth: 150 }} />
                         </div>
-                        <div>{id}:{hearts.toString()}</div>
+                        <div>Heart Count: {hearts.toString()}</div>
                       </Card>
                       <div>                        
                         <Button
@@ -955,6 +844,27 @@ function App(props) {
               />
             </div>
           </Route>
+          <Route path="/events">
+
+          <Events
+            contracts={readContracts}
+            contractName="Moderator"
+            eventName="RegisterEvent"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
+
+          <Events
+            contracts={readContracts}
+            contractName="Moderator"
+            eventName="HeartArtEvent"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
+
+        </Route>          
   {/*
           <Route path="/transfers">
             <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
