@@ -33,10 +33,10 @@ Original Source: https://github.com/scaffold-eth/scaffold-eth-challenges
 > Forked Source: https://github.com/OwlWilderness/scaffold-eth-challenges/tree/forest
 
 ### Contracts (From Challenge)
-* > YourCollectible - (Challenge 0) : POAP for PEACE Artist Submissions (P04PAS) https://rinkeby.etherscan.io/address/0x216eec15617fB82E83f7eEf08Ea11Bd6F226AACF#code
-* > YourToken - (Challege 2) : HEART token used to vote https://rinkeby.etherscan.io/address/0x846D7e0a8b54Cc818bE71d3D3a4fC5e71362d7f5#code
-* > Vendor - (Challenge 2) : Hold and Issue HEART tokens (currently no cost) https://rinkeby.etherscan.io/address/0xA69693cbDF9038C1c5b1c453E83Fd59f3258CeA3#code
-* > Moderator (this) : manange Registration and Voting https://rinkeby.etherscan.io/address/0x6286DB08B4e5C8A381AaA4a9C0A8e274Fa7C1376#code
+* > YourCollectible - (Challenge 0) : POAP for PEACE Artist Submissions (P04PAS) https://rinkeby.etherscan.io/address/0xE52370fdf4Fa0F6CC4313826b53a262d560B289D#code
+* > YourToken - (Challege 2) : HEART token used to vote https://rinkeby.etherscan.io/address/0x02f43A9f87466c2fA7AB7A56F403FF0d1D55bD15#code
+* > Vendor - (Challenge 2) : Hold and Issue HEART tokens https://rinkeby.etherscan.io/address/0xaB995e66D44c6D16931275f89752C90cBE49F301
+* > Moderator (this) : manange Registration and Voting https://rinkeby.etherscan.io/address/0xd01ec52bEf2c048747789f806b8810F781069AFA#code
 
 ## Overview
 > P04PAS - POAP 4 PEACE Artist Submbission (yourCollectible)
