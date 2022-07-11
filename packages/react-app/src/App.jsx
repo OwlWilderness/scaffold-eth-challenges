@@ -1,3 +1,4 @@
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Col, List, Menu, Row } from "antd";
@@ -60,10 +61,10 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 const NETWORKCHECK = true;
 
 // 🛰 providers
@@ -247,9 +248,9 @@ function App(props) {
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
   // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
+  //useOnBlock(mainnetProvider, () => {
+  //  console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
+  //});
 
   // Then read your DAI balance like:
   const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
@@ -452,6 +453,8 @@ function App(props) {
   const winnerEvents = useEventListener(readContracts, "DiceGame", "Winner");
   const rollEvents = useEventListener(readContracts, "DiceGame", "Roll");
   const prize = useContractReader(readContracts, "DiceGame", "prize");
+  const riggedRollEvents = useEventListener(readContracts, "RiggedRoll", "RiggedRollEvent");
+  console.log("riggedrole", riggedRollEvents)
 
   const [diceRolled, setDiceRolled] = useState(false);
   const [diceRollImage, setDiceRollImage] = useState(null);
@@ -469,12 +472,12 @@ function App(props) {
     tx(writeContracts.DiceGame.rollTheDice({ value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }), update => {
       if (update?.status === "failed") {
         setDiceRolled(false);
-        //setDiceRollImage(null);
+        setDiceRollImage(null);
       }
     });
   };
 
-    /*
+    
   const riggedRoll = async () => {
     tx(writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }), update => {
       console.log("TX UPDATE", update);
@@ -484,12 +487,13 @@ function App(props) {
       }
       if (update?.status === "failed") {
         setDiceRolled(false);
-        //setDiceRollImage(null);
+        setDiceRollImage(null);
       }
       if (update?.status == 1 || update?.status == "confirmed") {
         setTimeout(() => {
           setDiceRolled(false);
-        }, 1500);
+          setDiceRollImage(null);
+        }, 3000);
       }
     });
   };
@@ -503,7 +507,7 @@ function App(props) {
       setDiceRolled(false);
     }
   });
-*/
+
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
@@ -563,17 +567,33 @@ function App(props) {
                         &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
                       </List.Item>
                     );
-                  }}
+                  }}                  
+                />
+                <div>Rigged Roll Events:</div>
+                <List
+                  style={{ height: 258, overflow: "hidden" }}
+                  dataSource={riggedRollEvents}
+                  renderItem={item => {
+                    return (
+                      <List.Item
+                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
+                      >
+                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                        &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
+                      </List.Item>
+                    );
+                  }}                  
                 />
               </div>
               <div id="centerWrapper" style={{ padding: 16 }}>
                 <h2>Roll a 0, 1, or 2 to win the prize!</h2>
                 <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
+
                 <div style={{ padding: 16, format: "flex", flexDirection: "row" }}>
                   <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
                     Roll the dice!
                   </Button>
-                  {/*
+                  
                   <div style={{ padding: 16 }}>
                     <Account
                       address={readContracts?.RiggedRoll?.address}
@@ -590,7 +610,7 @@ function App(props) {
                       Rigged Roll!
                     </Button>
                   </div>
-                */}
+                
                 </div>
                 {diceRollImg}
               </div>
