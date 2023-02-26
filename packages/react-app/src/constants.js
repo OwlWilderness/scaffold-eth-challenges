@@ -1,8 +1,8 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+export const INFURA_ID = "cfc3fd178edb41a39cf3403b7a96337d";
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
+export const ETHERSCAN_KEY = "93J3DMA1DJ5JN1BTWVR4CUGVAWPZWXAGF7";
 
 // BLOCKNATIVE ID FOR Notify.js:
 export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
@@ -87,10 +87,10 @@ export const NETWORKS = {
     color: "#92D9FA",
     chainId: 80001,
     price: 1,
-    gasPrice: 1000000000,
-    rpcUrl: "https://rpc-mumbai.maticvigil.com",
-    faucet: "https://faucet.matic.network/",
-    blockExplorer: "https://mumbai-explorer.matic.today/",
+    gasPrice: 10000000000,
+    rpcUrl: `https://polygon-mumbai.infura.io/v3/${INFURA_ID}`,
+    faucet: "https://mumbaifaucet.com/",
+    blockExplorer: "https://mumbai.polygonscan.com/",
   },
   localArbitrum: {
     name: "localArbitrum",

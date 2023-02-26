@@ -30,6 +30,7 @@ import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 import humanizeDuration from "humanize-duration";
 import TextArea from "antd/lib/input/TextArea";
+import { TokenAmount } from "@uniswap/sdk";
 
 const { ethers } = require("ethers");
 /*
@@ -52,7 +53,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -343,14 +344,17 @@ function App(props) {
    * @param {MessageEvent<string>} e
    */
   channel.onmessage = e => {
+
     if (typeof e.data != "string") {
       console.warn(`recieved unexpected channel data: ${JSON.stringify(e.data)}`);
       return;
     }
 
-    console.log("Received: %s", e.data);
+    
     recievedWisdom = e.data;
-    document.getElementById("recievedWisdom-" + userAddress).innerText = recievedWisdom;
+   if (document && document.getElementById("recievedWisdom-" + userAddress)){
+      document.getElementById("recievedWisdom-" + userAddress).innerText = recievedWisdom;
+    }
 
     if (autoPay) {
       reimburseService(recievedWisdom);
@@ -466,6 +470,7 @@ function App(props) {
       // a string representation of the BigNumber for transit over the network
       const updatedBalance = ethers.BigNumber.from(voucher.data.updatedBalance);
 
+
       /*
        *  Checkpoint 4:
        *
@@ -476,14 +481,22 @@ function App(props) {
        *  `clientAddress`. (If it wasn't, log some error message and return).
       */
 
-      const existingVoucher = vouchers()[clientAddress];
+      const packed = ethers.utils.solidityPack(["uint256"], [updatedBalance]);
+      const hashed = ethers.utils.keccak256(packed);
+      const arrayified = ethers.utils.arrayify(hashed);    
+      const verify = ethers.utils.verifyMessage(arrayified,voucher.data.signature);
 
-      // update our stored voucher if this new one is more valuable
-      if (existingVoucher === undefined || updatedBalance.lt(existingVoucher.updatedBalance)) {
-        vouchers()[clientAddress] = voucher.data;
-        vouchers()[clientAddress].updatedBalance = updatedBalance;
-        updateClaimable(clientAddress);
-        // logVouchers();
+      if(verify == clientAddress){
+
+        const existingVoucher = vouchers()[clientAddress];
+
+        // update our stored voucher if this new one is more valuable
+        if (existingVoucher === undefined || updatedBalance.lt(existingVoucher.updatedBalance)) {
+          vouchers()[clientAddress] = voucher.data;
+          vouchers()[clientAddress].updatedBalance = updatedBalance;
+          updateClaimable(clientAddress);
+          // logVouchers();
+        }
       }
     }
   }
@@ -531,6 +544,23 @@ function App(props) {
     const channelInput = document.getElementById("input-" + clientAddress);
     if (channelInput) {
       const wisdom = channelInput.value;
+      //Checkpoint 4 Side Quest - 
+      //stop service to clients who dont pay
+
+      let unpaidCharacters = wisdom.length;
+      if(unpaidCharacters > 0){
+        if(vouchers()[clientAddress]){
+          const costPerCharacter = ethers.utils.parseEther("0.001");
+          const paidCharacters = vouchers()[clientAddress].updatedBalance.div(costPerCharacter);
+          unpaidCharacters = unpaidCharacters - paidCharacters;
+        }
+        if(unpaidCharacters > 2500){
+          console.warn('2500 char unpaid max');
+          return;
+        }
+      }
+
+
       // console.log("sending: %s", wisdom);
       channels[clientAddress].postMessage(wisdom);
       document.getElementById(`provided-${clientAddress}`).innerText = wisdom.length;
@@ -800,7 +830,7 @@ function App(props) {
                         </div>
                       </Card>
 
-                      {/* Checkpoint 5:
+                      {/* Checkpoint 5: */}
                       <Button
                         style={{ margin: 5 }}
                         type="primary"
@@ -811,7 +841,7 @@ function App(props) {
                         }}
                       >
                         Cash out latest voucher
-                      </Button> */}
+                      </Button>
                     </List.Item>
                   )}
                 ></List>
@@ -853,7 +883,7 @@ function App(props) {
                         </Card>
                       </Col>
 
-                      {/* Checkpoint 6: challenge & closure
+                      {/* Checkpoint 6: challenge & closure */}
 
                       <Col span={5}>
                         <Button
@@ -862,8 +892,10 @@ function App(props) {
                           onClick={() => {
                             // disable the production of further voucher signatures
                             autoPay = false;
+
                             tx(writeContracts.Streamer.challengeChannel());
-                            try {
+                            //claimPaymentOnChain(userAddress);
+ try {                           
                               // ensure a 'ticking clock' for the UI without having
                               // to send new transactions & mine new blocks
                               localProvider.send("evm_setIntervalMining", [5000]);
@@ -887,7 +919,7 @@ function App(props) {
                         >
                           Close and withdraw funds
                         </Button>
-                      </Col> */}
+                      </Col> 
                     </Row>
                   </div>
                 ) : hasClosedChannel() ? (

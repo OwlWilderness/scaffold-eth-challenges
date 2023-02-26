@@ -25,7 +25,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "mumbai";
 
 const mainnetGwei = 115;
 
@@ -113,8 +113,15 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    mumbai: {
+      url: "https://polygon-mumbai.infura.io/v3/cfc3fd178edb41a39cf3403b7a96337d", // <---- YOUR MORALIS ID! (not limited to infura)
+      gasPrice: 10000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     polytest: {
-      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
+      url: "https://polygon-mumbai.infura.io/v3/cfc3fd178edb41a39cf3403b7a96337d", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
@@ -262,7 +269,7 @@ module.exports = {
   },
   etherscan: {
     // Add your api key here
-    apiKey: "H4FGK1QG87JUVEYJQDY7F2UF5IGEX42TUF",
+    apiKey: "93J3DMA1DJ5JN1BTWVR4CUGVAWPZWXAGF7",
   },
 };
 
